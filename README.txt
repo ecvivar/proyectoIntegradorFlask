@@ -1,58 +1,78 @@
-Proyecto eShop en Python Flask y MySQL:
+# Proyecto Integrador - Tienda Online Flask
 
-Definimos y preparamos el entorno de Programacion.
+Tienda online (e-commerce) desarrollada en Python con Flask y MySQL para la venta de remeras con diseños de bandas de música icónicas.
 
-Creamos la carpeta raiz donde se almacenara nuestro proyecto:
+## Características
 
-C:\proyecto-integrador>
+- Catálogo de productos con imágenes
+- Sistema de usuarios (registro, login, logout)
+- Carrito de compras (agregar, visualizar, eliminar productos)
+- Integración con Mercado Pago para pagos electrónicos
+- Panel de administración (ABM) para gestionar productos
+- Búsqueda de productos por descripción
 
-Luego creamos el entorno virtual:
+## Tecnologías
 
-C:\proyecto-integrador>pip install virtualenv
+- **Backend:** Python, Flask, Flask-MySQL
+- **Base de datos:** MySQL
+- **Frontend:** HTML, CSS, Jinja2 templates
+- **Pagos:** Mercado Pago SDK
 
-Creamos el entorno:
+## Requisitos
 
-C:\proyecto-integrador>virtualenv env
-
-Ahora activamos el entorno virtual:
-
-C:\proyecto-integrador>env\Scripts\activate
-
-Definido el espacio de trabajo instalar:
-
+```bash
 pip install Flask
 pip install flask-mysql
+pip install mercadopago
+```
 
-Para integrar SDK Python de Mercado Pago:
+## Instalación
 
-pip3 install mercadopago
+1. Clonar el repositorio
+2. Crear entorno virtual:
+   ```bash
+   virtualenv env
+   ```
+3. Activar entorno virtual:
+   - Windows: `env\Scripts\activate`
+   - Linux/Mac: `source env/bin/activate`
+4. Instalar dependencias:
+   ```bash
+   pip install -r requirements.txt
+   ```
+5. Configurar MySQL:
+   - Crear base de datos `final`
+   - Importar `final.sql`
+   - Actualizar credenciales en `app.py` si es necesario
 
-Verificar que esten instalados los siguientes modulos (ejecutar pip freeze):
+## Ejecución
 
-certifi==2021.5.30
-charset-normalizer==2.0.3
-click==8.0.1
-colorama==0.4.4
-Flask==2.0.1
-Flask-MySQL==1.5.2
-idna==3.2
-itsdangerous==2.0.1
-Jinja2==3.0.1
-MarkupSafe==2.0.1
-mercadopago==2.0.7
-PyMySQL==1.0.2
-requests==2.26.0
-urllib3==1.26.6
-Werkzeug==2.0.1
+```bash
+python app.py
+```
 
-Luego importar la Base de Datos:
+Acceder a: `http://127.0.0.1:5000/`
 
-final.sql
+## Usuarios
 
-Inicializar servidor flask:
+- **Usuario administrador:** acceso completo al panel ABM
+- **Usuarios regulares:** pueden registrarse desde la web
 
-(env) C:\proyecto-integrador>python app.py
+## Estructura del Proyecto
 
-Acceder a la aplicacion:
-
-http://127.0.0.1:5000/
+```
+proyecto-integrador-final/
+├── app.py                 # Aplicación principal
+├── templates/             # Plantillas HTML
+│   ├── productos.html
+│   ├── login.html
+│   ├── register.html
+│   ├── carrito.html
+│   ├── comprar.html
+│   └── ...
+├── static/                # Archivos estáticos
+│   ├── css/
+│   └── imagenes/
+├── final.sql              # Base de datos
+└── requirements.txt      # Dependencias
+```
