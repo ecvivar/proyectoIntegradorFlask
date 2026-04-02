@@ -452,5 +452,5 @@ def process_payment():
    
     return redirect(payment)
 
-if __name__ == "__main__":
+if __name__ == "__app__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
