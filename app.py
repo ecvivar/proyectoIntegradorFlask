@@ -10,10 +10,10 @@ mysql = MySQL()
 app.secret_key = 'your secret key'
 
 #Configuracion MySQL
-app.config['MYSQL_DATABASE_HOST'] = 'localhost'
-app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = ''
-app.config['MYSQL_DATABASE_DB'] = 'final'
+app.config['MYSQL_HOST'] = os.getenv('MYSQLHOST')
+app.config['MYSQL_USER'] = os.getenv('MYSQLUSER')
+app.config['MYSQL_PASSWORD'] = os.getenv('MYSQLPASSWORD')
+app.config['MYSQL_DB'] = os.getenv('MYSQLDATABASE')
 
 #AGREGAR CARPETA
 CARPETA = os.path.join('static/imagenes/imagenes_productos/')  # al path del proyecto le adjunto ‘upload’
