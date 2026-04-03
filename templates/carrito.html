@@ -1,0 +1,79 @@
+{% include 'header.html' %}
+<script src="https://sdk.mercadopago.com/js/v2"></script>
+<section>
+    <div class="container">
+        <div class="row">
+            <p>
+                <h2>Carrito de Compras</h2>
+            </p>
+            <div class="col-sm-12">
+                <div>
+                    {% with messages = get_flashed_messages() %} {% if messages %}
+                    <ul class=flashes>
+                        {% for message in messages %}
+                        <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %} {% endwith %}
+                </div>
+
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th class="text-center">Precio por Unidad</th>
+                            <th class="text-center">Total abonar</th>
+                            <th> </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for producto in itemCarrito%}
+                        <tr>
+                            <td class="col-sm-8 col-md-6">
+                                <div class="media">
+                                    <a class="thumbnail pull-left" href="#"><img class="media-object" src="/static/imagenes/imagenes_productos/{{ producto[6] }}" style="width: 72px; height: 72px;"></a>
+                                    <div class="media-body">
+                                        <h5 class="media-heading"><a href="#"> {{producto[3]}} </a></h5>
+                                        <span>Status: </span><span class="text-success"><strong>En Stock</strong></span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="col-sm-1 col-md-1" style="text-align: center;"><label for="">{{producto[5]}}</label></td>
+                            <td class="col-sm-1 col-md-1 text-center"><strong>$ {{producto[4]}}</strong></td>
+                            <td class="col-sm-1 col-md-1 text-center"><strong>$ {{producto[7]}}</strong></td>
+                            <td class="col-sm-1 col-md-1">
+                                <a href="/borrar/{{producto[0]}}" class="btn btn-danger" onclick="return confirm('¿Desea borrar el producto?')">Eliminar</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td colspan="3" style="padding: 0%;">
+                                <h5>Cantidad Total {{mostrarCantidad}}</h5>
+                            </td>
+                            <td colspan="2" class="text-rigth">
+                                <h5><strong>$ {{mostrarTotal}}</strong></h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <a href="/" class="btn btn-dark">Continuar Comprando</a>
+                            </td>
+                            <td colspan="2">
+                                <a href="/vaciar_carrito/{{session.usuario}}" class="btn btn-dark">Vaciar Carrito</a>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+        <div class="text-center">
+            <a href="/comprar" class="btn btn-danger"> Comprar </a>
+        </div>
+        <br>
+    </div>
+</section>
+{% include 'footer.html' %}

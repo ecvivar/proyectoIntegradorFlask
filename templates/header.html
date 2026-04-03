@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/static/css/styles-mp.css">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <script src="https://kit.fontawesome.com/d7eab12656.js" crossorigin="anonymous"></script>
+
+    <title>Vector Design</title>
+</head>
+
+<body>
+
+    <div class="row align-items-center shadow">
+
+        <div class="col-sm-2">
+            <a href=" / ">
+                <img id="logo " src="/static/imagenes/logo/logo_design.JPG" width="80%">
+            </a>
+        </div>
+
+        <div class="col-sm-6">
+            <form class="form-inline" method="post" action="/search" enctype="multipart/form-data">
+                <div class="form-group mx-sm-3">
+                    <input class="form-control" type="text" id="txtSearch" name="txtSearch">
+                </div>
+                <div class="form-group mx-sm-3">
+                    <input class="btn btn-dark" type="submit" value="Buscar">
+                </div>
+            </form>
+        </div>
+
+        <div class="col-sm-1">
+            <a href="/carrito "><img src="/static/imagenes/cart_shop.png " width="60px" id="cartIcon " /></a>
+        </div>
+        {% if session.usuario %}
+        <div class="col-sm-1">
+            <div class="circulo">
+                <p>{{mostrarCantidad}}</p>
+            </div>
+        </div>
+        {% endif %} {% if session['usuario']=='admin' %}
+        <div class="col-sm-1">
+            <a class="link btn btn-danger" href="/abm "> Administrar</a>
+
+        </div>
+        {% endif %} {% if not session.usuario %}
+        <div class="col-sm-1">
+            <div id="signInButton ">
+                <a class="btn btn-dark" href="/login">Sign In</a>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-sm-1">
+            <div class="dropdown ">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                    {{session.usuario}}</button>
+                <div class="dropdown-menu ">
+                    <a class="dropdown-item" href="/carrito">Mis órdenes</a>
+                    <a class="dropdown-item" href="/account/profile ">Mi perfil</a>
+                    <a class="dropdown-item" href="/logout ">Cerrar sesión</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>

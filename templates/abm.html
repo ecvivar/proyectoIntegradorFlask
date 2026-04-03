@@ -1,0 +1,39 @@
+{% include 'header.html' %} {% if session['usuario']=='admin' %}
+<br>
+<a href="{{url_for('create')}}" class="btn btn-success">Ingresar producto</a>
+<table class="table table-light">
+    <thead class="thead-light">
+        <tr>
+            <th>#</th>
+            <th>Descripcion</th>
+            <th>Precio</th>
+            <th>Cantidad</th>
+            <th>Foto</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for producto in productos %}
+        <tr>
+            <td>{{producto[0]}}</td>
+
+            <td>{{producto[1]}}</td>
+
+            <td>{{producto[2]}}</td>
+
+            <td>{{producto[3]}}</td>
+            <td>
+                <img class="img-thumbnail" src="static/imagenes/imagenes_productos/{{producto[4]}}" width="100" alt="foto producto">
+            </td>
+            <td>
+                <a href="/edit/{{producto[0]}}" class="btn btn-primary">Editar</a>
+                <a href="/destroy/{{producto[0]}}" class="btn btn-danger" onclick="return confirm('¿Desea borrar el producto?')">Eliminar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{%else%}
+<br>
+<h1>ACCESO NO AUTORIZADO</h1>
+<br> {%endif%} {% include 'footer.html' %}
