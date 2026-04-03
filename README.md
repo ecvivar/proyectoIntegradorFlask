@@ -20,18 +20,12 @@ Tienda online (e-commerce) desarrollada en Python con Flask y MySQL para la vent
 
 ## Requisitos
 
-```bash
-pip install Flask
-pip install flask-mysql
-pip install mercadopago
-```
-
 ## Instalación
 
 1. Clonar el repositorio
 2. Crear entorno virtual:
    ```bash
-   virtualenv env
+   python -m venv env
    ```
 3. Activar entorno virtual:
    - Windows: `env\Scripts\activate`
@@ -55,8 +49,8 @@ Acceder a: `http://127.0.0.1:5000/`
 
 ## Usuarios
 
-- **Usuario admin:** `admin` (acceso completo al panel ABM)
-- **Usuarios regulares:** pueden registrarse desde la web
+- **Usuario administrador:** con acceso completo al panel ABM.
+- **Usuarios regulares:** pueden registrarse desde la web.
 
 ## Estructura del Proyecto
 
@@ -76,12 +70,3 @@ proyecto-integrador-final/
 ├── final.sql              # Base de datos
 └── requirements.txt      # Dependencias
 ```
-
-## Imágenes de Productos
-
-- Pink Floyd - The Wall
-- Rammstein
-- Beastie Boys
-- Patricio Rey y sus Redonditos de Ricota
-- Parental Advisory
-- Volver al Futuro
