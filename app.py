@@ -1,5 +1,5 @@
 from flask import Flask, session, render_template, request, redirect, url_for
-#from flaskext.mysql import MySQL
+from flaskext.mysql import MySQL
 import pymysql
 from flask.helpers import send_from_directory
 import re,os
