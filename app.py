@@ -1,5 +1,6 @@
 from flask import Flask, session, render_template, request, redirect, url_for
-from flaskext.mysql import MySQL
+#from flaskext.mysql import MySQL
+import pymysql
 from flask.helpers import send_from_directory
 import re,os
 from datetime import datetime
@@ -19,13 +20,27 @@ app.config['MYSQL_DB'] = os.getenv('MYSQLDATABASE')
 CARPETA = os.path.join('static/imagenes/imagenes_productos/')  # al path del proyecto le adjunto ‘upload’
 app.config['CARPETA'] = CARPETA
 
+#Ver configuracion del host
+print("HOST:", os.getenv('MYSQLHOST'))
+print("USER:", os.getenv('MYSQLUSER'))
 
 mysql.init_app(app)
+
+#Definimos una funcion para la conexion
+def get_connection():
+    return pymysql.connect(
+        host=os.getenv('MYSQLHOST'),
+        user=os.getenv('MYSQLUSER'),
+        password=os.getenv('MYSQLPASSWORD'),
+        database=os.getenv('MYSQLDATABASE'),
+        port=3306,
+        cursorclass=pymysql.cursors.DictCursor
+    )
 
 @app.route('/')
 def productos():
     sql="SELECT * FROM productos;"
-    conn=mysql.connect() #Hacemos la conexion a mysql
+    conn=get_connection() #Hacemos la conexion a mysql
     cursor=conn.cursor()
     cursor.execute(sql) #Ejecutamos el string sql 
     rows=cursor.fetchall()
@@ -52,7 +67,7 @@ def login():
         username_form = request.form['username']
         password_form = request.form['password']
    
-        conn=mysql.connect()
+        conn=get_connection()
         cursor=conn.cursor()
         cursor.execute("SELECT COUNT(1) FROM usuarios WHERE username = %s;", [username_form])
         if cursor.fetchone()[0]:
@@ -80,7 +95,7 @@ def register():
         username = request.form['username']
         password = request.form['password']
         email = request.form['email']
-        conn=mysql.connect()
+        conn=get_connection()
         cursor=conn.cursor()
         cursor.execute('SELECT * FROM usuarios WHERE username = %s', (username, ))
         user = cursor.fetchone()
@@ -111,7 +126,7 @@ def add_product_to_cart():
         if request.method == 'POST' and 'codigo' in request.form and 'cantidad' in request.form:
             codigo_form = request.form['codigo']
             cantidad_form = request.form['cantidad']
-            conn = mysql.connect()
+            conn = get_connection()
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM productos WHERE codigo=%s",(codigo_form))
             
@@ -127,7 +142,7 @@ def add_product_to_cart():
             usuario=session['usuario']
 
             # Deberiamo comprobar que el producto se encuentre en el carrito
-            conn = mysql.connect()
+            conn = get_connection()
             cursor = conn.cursor()
             cursor.execute("SELECT codigo, cantidad, precio FROM carrito WHERE username=%s AND codigo=%s",(usuario,codigo_form))
             productosCarrito = cursor.rowcount
@@ -147,7 +162,7 @@ def add_product_to_cart():
                 #Como el producto ya esta en el carrito solo incrementamos la cantidad segun el valor que trae el formulario
                 nuevaCantidad = cantidadExistente + int(cantidad_form)
                 nuevoTotalAbonar = nuevaCantidad * cantidadEnCarrito[2]
-                conn = mysql.connect()
+                conn = get_connection()
                 cursor = conn.cursor()
                 cursor.execute("UPDATE carrito SET cantidad=%s, totalAbonar=%s ",(nuevaCantidad,nuevoTotalAbonar))
                 conn.commit()
@@ -156,7 +171,7 @@ def add_product_to_cart():
                 print(nuevaCantidad)
             else:
                 #Si el producto no existe en el carrito del usuario, entonces lo agregamos como un nuevo registro
-                conn = mysql.connect()
+                conn = get_connection()
                 cursor = conn.cursor()
                 sql = "INSERT INTO `carrito`(`id`, `username`, `codigo`, `descripcion`, `precio`, `cantidad`, `foto`, `totalAbonar`) VALUES (NULL, %s, %s, %s, %s, %s, %s, %s)"
                 datos = (usuario, _codigo,_descripcion, _precio, cantidad_form, _foto, totalAbonar)         
@@ -169,7 +184,7 @@ def add_product_to_cart():
 def search():
     busqueda = request.form['txtSearch']
     sql="SELECT * FROM productos where descripcion like %s"
-    conn=mysql.connect() #Hacemos la conexion a mysql
+    conn=get_connection() #Hacemos la conexion a mysql
     cursor=conn.cursor()
     cursor.execute(sql,(('%' + busqueda + '%'))) #Ejecutamos el string sql junto al comodin
     rows=cursor.fetchall()
@@ -192,7 +207,7 @@ def search():
 def carrito():
     if 'usuario' in session:
         usuario = session['usuario']
-        conn = mysql.connect()
+        conn = get_connection()
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM carrito WHERE username=%s",usuario)
         itemCarrito = cursor.fetchall()
@@ -227,7 +242,7 @@ def carrito():
 
 @app.route('/borrar/<int:id>')
 def borrar(id):
-    conn = mysql.connect()
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("DELETE FROM carrito WHERE id=%s",(id))
     conn.commit()
@@ -235,7 +250,7 @@ def borrar(id):
 
 @app.route('/vaciar_carrito/<string:username>')
 def vaciar_carrito(username):
-    conn = mysql.connect()
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("DELETE FROM carrito WHERE username=%s",(username))
     conn.commit()
@@ -248,7 +263,7 @@ def abm():
     if session:    
         if session['usuario'] == 'admin' and session['usuario']:
             sql = "SELECT * FROM `productos`;"
-            conn = mysql.connect()
+            conn = get_connection()
             cursor = conn.cursor()
             cursor.execute(sql)
             # guarda el resultado del cursor del cursor en la variable productos
@@ -285,7 +300,7 @@ def storage():
 
     sql = "INSERT INTO `productos` (`codigo`,`descripcion`,`precio`,`cantidad`,`foto`) VALUES (null,%s,%s,%s,%s)"
     datos = (_nombre, _precio, _cantidad, nuevoNombreFoto)  # crea la sentencia sql
-    conn = mysql.connect()
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(sql, datos)  # ejecuta la sentencia sql
     conn.commit()
@@ -293,7 +308,7 @@ def storage():
 
 @app.route('/create')
 def create():
-    conn = mysql.connect()              # me conecto a la base de datos
+    conn = get_connection()              # me conecto a la base de datos
     cursor = conn.cursor()  
     cursor.execute("SELECT SUM(cantidad) FROM carrito WHERE username=%s",'admin')
     registro = cursor.fetchone()
@@ -309,7 +324,7 @@ def create():
 @app.route('/edit/<int:id>')
 def edit(id):
     sql = "SELECT * FROM `productos` WHERE codigo=%s;"
-    conn = mysql.connect()              # me conecto a la base de datos
+    conn = get_connection()              # me conecto a la base de datos
     cursor = conn.cursor()              # almacenar informacion
     cursor.execute(sql, (id))               # ejecuto en MySQL la variable sql
     productos = cursor.fetchall()
@@ -337,7 +352,7 @@ def update():
     sql = "UPDATE `productos` SET `descripcion`=%s ,`precio`=%s ,`cantidad`=%s WHERE codigo=%s"
     datos = (_nombre, _precio,_cantidad, _id)  # crea la sentencia sql
 
-    conn = mysql.connect()
+    conn = get_connection()
     cursor = conn.cursor()
 
     # agregamos
@@ -368,7 +383,7 @@ def uploads(nombreFoto):
 @app.route('/destroy/<int:id>')
 def destroy(id):
     sql = "DELETE FROM `productos` WHERE codigo=%s;"
-    conn = mysql.connect()
+    conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute("SELECT foto FROM `productos` WHERE codigo=%s", (id))
@@ -390,7 +405,7 @@ def comprar():
     #print(payment_methods)
     #Traemos de nuevo los productos del carrito para poder generar la orden de pago
     usuario = session['usuario']
-    conn = mysql.connect()
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM carrito WHERE username=%s",usuario)
     itemCarrito = cursor.fetchall()
