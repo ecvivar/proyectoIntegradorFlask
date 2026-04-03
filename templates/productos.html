@@ -12,7 +12,7 @@
                     <div class="single-publication">
                         <figure style="width: 263px;">
                             <a href="#">
-                                <img src="/static/imagenes/imagenes_productos/{{ producto[4] }}" width="263px" alt="">
+                                <img src="{{ url_for('static', filename='imagenes/imagenes_productos/' + producto[4]) }}" width="263px" alt="">
                             </a>
                             <ul>
                                 <li><a href="#" title="Anadir a Favoritos"><i class="fa fa-heart"></i></a></li>
